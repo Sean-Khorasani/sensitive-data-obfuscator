@@ -1356,22 +1356,25 @@ class SmartEnterpriseDLP {
         if (editor.tagName === 'INPUT' || editor.tagName === 'TEXTAREA') {
           // For simple inputs
           let currentText = editor.value || '';
-          
+
           // First try to replace malformed marker
           const malformedMarker = `◆${data.pattern.replacement}◆${tokenId}◆`;
           if (currentText.includes(malformedMarker)) {
             currentText = currentText.replace(malformedMarker, replacement);
-          } else {
+          } else if (currentText.includes(data.pattern.replacement)) {
             // Fallback to clean token replacement
             currentText = currentText.replace(data.pattern.replacement, replacement);
+          } else if (currentText.includes(data.original)) {
+            // Handle case where original value was inserted
+            currentText = currentText.replace(data.original, replacement);
           }
-          
+
           editor.value = currentText;
         } else {
           // For contentEditable, handle both malformed markers and clean tokens
           let currentHTML = editor.innerHTML;
           let currentText = editor.textContent || '';
-          
+
           // First try to replace malformed marker in HTML
           const malformedMarker = `◆${data.pattern.replacement}◆${tokenId}◆`;
           if (currentHTML.includes(malformedMarker)) {
@@ -1380,6 +1383,10 @@ class SmartEnterpriseDLP {
           } else if (currentText.includes(data.pattern.replacement)) {
             // Fallback to clean token replacement
             const newText = currentText.replace(data.pattern.replacement, replacement);
+            editor.innerHTML = newText.replace(/\n/g, '<br>');
+          } else if (currentText.includes(data.original)) {
+            // Original or edited value is currently shown
+            const newText = currentText.replace(data.original, replacement);
             editor.innerHTML = newText.replace(/\n/g, '<br>');
           }
         }
@@ -1435,7 +1442,11 @@ class SmartEnterpriseDLP {
       const data = this.obfuscatedElements.get(tokenId);
       if (data) {
         const currentText = editor.textContent || editor.value || '';
-        const newText = currentText.replace(data.pattern.replacement, replacement);
+        let newText = currentText.replace(data.pattern.replacement, replacement);
+        if (newText === currentText && currentText.includes(data.original)) {
+          // Handle case where original/edited value is present
+          newText = currentText.replace(data.original, replacement);
+        }
         
         if (editor.tagName === 'INPUT' || editor.tagName === 'TEXTAREA') {
           editor.value = newText;
