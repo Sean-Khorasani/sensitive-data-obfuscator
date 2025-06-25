@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Sensitive Data Obfuscator",
+  "version": "1.0.1",
+  "description": "Automatically obfuscates sensitive information (credit cards, phone numbers, emails, etc.) when pasting text into LLM platforms to protect your privacy.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/smart-dlp.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Sensitive Data Obfuscator",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["src/obfuscation-patterns.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
+
