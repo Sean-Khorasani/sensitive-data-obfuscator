@@ -27,7 +27,7 @@ The extension detects and protects:
 ### Basic Usage
 1. **Copy sensitive data** to your clipboard
 2. **Paste into the LLM chat interface** - sensitive data is automatically obfuscated
-3. **Review the prompt** - sensitive information appears as tokens like `[CREDIT_CARD]`, `[USERNAME]`
+3. **Review the prompt** - sensitive information appears as tokens like `[CREDIT_CARD]`, `[PASSWORD]`
 4. **Manage data** via the floating shield button that appears
 
 ### Interactive Management
