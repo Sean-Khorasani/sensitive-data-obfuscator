@@ -1363,6 +1363,7 @@ class SmartEnterpriseDLP {
           const malformedMarker = `◆${data.pattern.replacement}◆${tokenId}◆`;
           if (currentText.includes(malformedMarker)) {
             currentText = currentText.replace(malformedMarker, replacement);
+
           } else {
             // Fallback to clean token replacement or previous value
             const search = currentValue !== null ? currentValue : data.pattern.replacement;
@@ -1442,7 +1443,11 @@ class SmartEnterpriseDLP {
       const data = this.obfuscatedElements.get(tokenId);
       if (data) {
         const currentText = editor.textContent || editor.value || '';
-        const newText = currentText.replace(data.pattern.replacement, replacement);
+        let newText = currentText.replace(data.pattern.replacement, replacement);
+        if (newText === currentText && currentText.includes(data.original)) {
+          // Handle case where original/edited value is present
+          newText = currentText.replace(data.original, replacement);
+        }
         
         if (editor.tagName === 'INPUT' || editor.tagName === 'TEXTAREA') {
           editor.value = newText;

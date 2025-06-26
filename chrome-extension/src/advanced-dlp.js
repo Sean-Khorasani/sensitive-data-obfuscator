@@ -42,8 +42,9 @@ class AdvancedDLP {
       phone: {
         // International and domestic phone patterns
         us: /\b(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b/g,
-        international: /\b\+?[1-9]\d{1,14}\b/g,
-        formatted: /\b\(\d{3}\)\s?\d{3}-\d{4}\b/g
+        formatted: /\b\(\d{3}\)\s?\d{3}-\d{4}\b/g,
+        // General phone pattern supporting varied spacing or separators
+        international: /\b(?:\+?[0-9]{1,3}[-.\s]?)?(?:\(?[0-9]{2,4}\)?[-.\s]?){2,4}[0-9]{2,4}\b/g
       },
       
       email: {
@@ -95,7 +96,7 @@ class AdvancedDLP {
       },
       phone: {
         us: '(XXX) XXX-XXXX',
-        international: '+X-XXX-XXX-XXXX',
+        international: 'XXX XXX XXXX',
         formatted: '(XXX) XXX-XXXX'
       },
       email: {
