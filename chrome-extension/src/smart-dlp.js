@@ -1198,6 +1198,37 @@ class SmartEnterpriseDLP {
           font-size: 12px;
         ">🗑️ Remove</button>
       `;
+    } else if (currentState === 'edited') {
+      // Show edit, restore token (instead of use original) and remove buttons
+      return `
+        <button data-action="edit" data-token-id="${tokenId}" style="
+          background: #ed8936;
+          color: white;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 12px;
+        ">✏️ Edit</button>
+        <button data-action="restore" data-token-id="${tokenId}" style="
+          background: #667eea;
+          color: white;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 12px;
+        ">🔒 Restore Token</button>
+        <button data-action="remove" data-token-id="${tokenId}" style="
+          background: #f56565;
+          color: white;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 12px;
+        ">🗑️ Remove</button>
+      `;
     } else if (currentState === 'removed') {
       // Only show restore button
       return `
