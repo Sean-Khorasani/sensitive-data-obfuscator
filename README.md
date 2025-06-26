@@ -1,4 +1,4 @@
-# Sensitive Data Obfuscator Chrome Extension
+# Sensitive Data Obfuscator Chrome/Edge Extension
 
 ## Overview
 
