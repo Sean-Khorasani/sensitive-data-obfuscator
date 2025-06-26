@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensitive Data Obfuscator</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    <h1>Data Protector</h1>
+                </div>
+                <div class="status-indicator" id="statusIndicator">
+                    <div class="status-dot"></div>
+                    <span id="statusText">Active</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Toggle -->
+        <div class="main-toggle">
+            <div class="toggle-content">
+                <div class="toggle-info">
+                    <h2>Protection Status</h2>
+                    <p id="protectionDescription">Automatically obfuscate sensitive data when pasting into LLM platforms</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="mainToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Current Site Status -->
+        <div class="site-status" id="siteStatus">
+            <div class="site-info">
+                <div class="site-icon">🌐</div>
+                <div class="site-details">
+                    <h3 id="siteName">Current Site</h3>
+                    <p id="siteDescription">Checking site status...</p>
+                </div>
+            </div>
+            <div class="site-badge" id="siteBadge">
+                <span>Unknown</span>
+            </div>
+        </div>
+
+        <!-- Simple Configuration -->
+        <div class="simple-config" id="simpleConfig">
+            <h3>Quick Settings</h3>
+            <div class="config-grid">
+                <div class="config-item">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="creditCardToggle" checked>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Credit Cards</span>
+                    </label>
+                </div>
+                <div class="config-item">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="phoneToggle" checked>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Phone Numbers</span>
+                    </label>
+                </div>
+                <div class="config-item">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="emailToggle" checked>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Email Addresses</span>
+                    </label>
+                </div>
+                <div class="config-item">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="ssnToggle" checked>
+                        <span class="checkmark"></span>
+                        <span class="label-text">SSN/SIN</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Configuration Toggle -->
+        <div class="advanced-toggle">
+            <button class="advanced-btn" id="advancedBtn">
+                <span>Advanced Configuration</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6,9 12,15 18,9"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Advanced Configuration Panel -->
+        <div class="advanced-config" id="advancedConfig" style="display: none;">
+            <!-- LLM Sites Management -->
+            <div class="config-section">
+                <h4>LLM Sites Management</h4>
+                <div class="auto-detect">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="autoDetectToggle" checked>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Auto-detect LLM platforms</span>
+                    </label>
+                </div>
+                <div class="sites-list" id="sitesList">
+                    <div class="sites-header">
+                        <span>Monitored Sites</span>
+                        <button class="add-site-btn" id="addSiteBtn">+ Add Site</button>
+                    </div>
+                    <div class="sites-container" id="sitesContainer">
+                        <!-- Sites will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Types Configuration -->
+            <div class="config-section">
+                <h4>Data Types & Patterns</h4>
+                <div class="patterns-list" id="patternsList">
+                    <!-- Patterns will be populated dynamically -->
+                </div>
+                <button class="add-pattern-btn" id="addPatternBtn">+ Add Custom Pattern</button>
+            </div>
+
+            <!-- DLP Techniques -->
+            <div class="config-section">
+                <h4>DLP Techniques</h4>
+                <div class="dlp-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="luhnValidation" checked>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Luhn algorithm validation for credit cards</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="contextualAnalysis">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Contextual analysis (experimental)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Export/Import Settings -->
+            <div class="config-section">
+                <h4>Settings Management</h4>
+                <div class="settings-actions">
+                    <button class="action-btn secondary" id="exportBtn">Export Settings</button>
+                    <button class="action-btn secondary" id="importBtn">Import Settings</button>
+                    <button class="action-btn danger" id="resetBtn">Reset to Defaults</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>Protecting your privacy on LLM platforms</p>
+                <div class="footer-links">
+                    <a href="#" id="helpLink">Help</a>
+                    <a href="#" id="privacyLink">Privacy</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="addSiteModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add LLM Site</h3>
+                <button class="close-btn" id="closeSiteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label for="siteUrl">Site URL or Domain:</label>
+                <input type="text" id="siteUrl" placeholder="e.g., chat.openai.com">
+                <p class="help-text">Enter the domain name of the LLM platform you want to monitor.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn secondary" id="cancelSiteAdd">Cancel</button>
+                <button class="action-btn primary" id="confirmSiteAdd">Add Site</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="addPatternModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Custom Pattern</h3>
+                <button class="close-btn" id="closePatternModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label for="patternName">Pattern Name:</label>
+                <input type="text" id="patternName" placeholder="e.g., Bank Account Number">
+                
+                <label for="patternRegex">Regular Expression:</label>
+                <input type="text" id="patternRegex" placeholder="e.g., \b\d{10,12}\b">
+                
+                <label for="patternReplacement">Replacement Text:</label>
+                <input type="text" id="patternReplacement" placeholder="e.g., XXXX-XXXX-XX">
+                
+                <p class="help-text">Use standard JavaScript regular expression syntax. Be careful with complex patterns.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn secondary" id="cancelPatternAdd">Cancel</button>
+                <button class="action-btn primary" id="confirmPatternAdd">Add Pattern</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
+
