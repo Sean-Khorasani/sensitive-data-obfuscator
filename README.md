@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Sensitive Data Obfuscator is a lightweight Data Loss Prevention (DLP) Chrome,Edge, and Firefox extension designed to protect sensitive information when interacting with Large Language Models (LLMs). It automatically detects and obfuscates confidential data—such as credit card numbers, passwords, and personal identifiers—when users copy and paste content into LLM chat interfaces.
+The Sensitive Data Obfuscator is a lightweight Data Loss Prevention (DLP) Chrome, Edge, and Firefox extension designed to protect sensitive information when interacting with Large Language Models (LLMs). It automatically detects and obfuscates confidential data—such as credit card numbers, passwords, and personal identifiers—when users copy and paste content into LLM chat interfaces.
 
 ## What It Does
 
