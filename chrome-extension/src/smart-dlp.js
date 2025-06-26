@@ -1252,21 +1252,20 @@ class SmartEnterpriseDLP {
       if (newValue !== null && newValue !== data.original) {
         // Set processing flag to prevent reprocessing
         this.isProcessing = true;
-        
+
+        const currentlyShowing = this.getCurrentlyShowing(tokenId);
+
         // Update the stored value
-        const oldValue = data.original;
         data.original = newValue;
         data.currentState = 'edited'; // Mark as edited
         this.obfuscatedElements.set(tokenId, data);
-        
-        // If the current state shows the original value, update it in the editor
-        if (data.currentState === 'original' || data.currentState === 'edited') {
-          this.replaceTokenInEditor(tokenId, newValue);
-        }
-        
+
+        // Replace in the editor, using the previously displayed value as the search target
+        this.replaceTokenInEditor(tokenId, newValue, currentlyShowing);
+
         this.showNotification(`Updated ${data.pattern.name} to: ${newValue}`, 3000);
         this.refreshPopup();
-        
+
         // Reset processing flag after delay
         setTimeout(() => { this.isProcessing = false; }, 300);
       }
@@ -1278,13 +1277,14 @@ class SmartEnterpriseDLP {
     if (data) {
       // Set processing flag to prevent reprocessing
       this.isProcessing = true;
-      
+
       // Mark as using original value
       data.currentState = 'original';
       this.obfuscatedElements.set(tokenId, data);
-      
+
       // Replace in the current text editor
-      this.replaceTokenInEditor(tokenId, data.original);
+      const previousValue = this.getCurrentlyShowing(tokenId);
+      this.replaceTokenInEditor(tokenId, data.original, previousValue);
       this.refreshPopup();
       this.showNotification(`Restored: ${data.original}`, 2000);
       
@@ -1302,9 +1302,10 @@ class SmartEnterpriseDLP {
       // Mark as removed
       data.currentState = 'removed';
       this.obfuscatedElements.set(tokenId, data);
-      
+
       // Remove from the current text editor
-      this.replaceTokenInEditor(tokenId, '[REMOVED]');
+      const previousValue = this.getCurrentlyShowing(tokenId);
+      this.replaceTokenInEditor(tokenId, '[REMOVED]', previousValue);
       this.refreshPopup();
       this.showNotification('Token removed', 2000);
       
@@ -1322,9 +1323,10 @@ class SmartEnterpriseDLP {
       // Clear the current state to restore to token
       delete data.currentState;
       this.obfuscatedElements.set(tokenId, data);
-      
+
       // Replace in the editor with the token
-      this.replaceTokenInEditor(tokenId, data.pattern.replacement);
+      const previousValue = this.getCurrentlyShowing(tokenId);
+      this.replaceTokenInEditor(tokenId, data.pattern.replacement, previousValue);
       this.refreshPopup();
       this.showNotification(`Restored token: ${data.pattern.replacement}`, 2000);
       
@@ -1333,7 +1335,7 @@ class SmartEnterpriseDLP {
     }
   }
   
-  replaceTokenInEditor(tokenId, replacement) {
+  replaceTokenInEditor(tokenId, replacement, currentValue = null) {
     // Find the editor and replace the specific token instance
     const editor = this.findInputTarget(document.activeElement) || 
                    this.findInputTarget(document.querySelector('[contenteditable="true"]'));
@@ -1356,31 +1358,36 @@ class SmartEnterpriseDLP {
         if (editor.tagName === 'INPUT' || editor.tagName === 'TEXTAREA') {
           // For simple inputs
           let currentText = editor.value || '';
-          
+
           // First try to replace malformed marker
           const malformedMarker = `◆${data.pattern.replacement}◆${tokenId}◆`;
           if (currentText.includes(malformedMarker)) {
             currentText = currentText.replace(malformedMarker, replacement);
           } else {
-            // Fallback to clean token replacement
-            currentText = currentText.replace(data.pattern.replacement, replacement);
+            // Fallback to clean token replacement or previous value
+            const search = currentValue !== null ? currentValue : data.pattern.replacement;
+            if (currentText.includes(search)) {
+              currentText = currentText.replace(search, replacement);
+            }
           }
-          
+
           editor.value = currentText;
         } else {
           // For contentEditable, handle both malformed markers and clean tokens
           let currentHTML = editor.innerHTML;
           let currentText = editor.textContent || '';
-          
+
           // First try to replace malformed marker in HTML
           const malformedMarker = `◆${data.pattern.replacement}◆${tokenId}◆`;
           if (currentHTML.includes(malformedMarker)) {
             currentHTML = currentHTML.replace(malformedMarker, replacement);
             editor.innerHTML = currentHTML;
-          } else if (currentText.includes(data.pattern.replacement)) {
-            // Fallback to clean token replacement
-            const newText = currentText.replace(data.pattern.replacement, replacement);
-            editor.innerHTML = newText.replace(/\n/g, '<br>');
+          } else {
+            const search = currentValue !== null ? currentValue : data.pattern.replacement;
+            if (currentText.includes(search)) {
+              const newText = currentText.replace(search, replacement);
+              editor.innerHTML = newText.replace(/\n/g, '<br>');
+            }
           }
         }
         
